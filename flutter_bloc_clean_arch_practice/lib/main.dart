@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Keep this if other blocs are used globally
 import 'di/injection_container.dart' as di;
-import 'presentation/cubit/repository_cubit.dart';
-import 'presentation/pages/home_page.dart';
-import 'presentation/pages/login_page.dart';
+
+import 'config/app_router.dart'; // Add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,13 +15,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router( // Change to MaterialApp.router
       title: 'Flutter GitHub Repositories',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      routerConfig: appRouter, // Add this line
     );
   }
 }

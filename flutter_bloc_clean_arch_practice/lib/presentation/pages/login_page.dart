@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../di/injection_container.dart';
 import '../cubit/login_cubit.dart';
 import '../cubit/login_state.dart';
@@ -38,14 +39,7 @@ class _LoginPageState extends State<LoginPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Welcome, ${state.user.username}!')),
               );
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider(
-                    create: (context) => sl<RepositoryCubit>(),
-                    child: const HomePage(),
-                  ),
-                ),
-              );
+              context.go('/home');
             } else if (state is LoginFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Login Failed: ${state.message}')),
