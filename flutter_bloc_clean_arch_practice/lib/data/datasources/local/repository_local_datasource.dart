@@ -27,29 +27,16 @@ abstract class RepositoryLocalDataSource {
 }
 
 class RepositoryLocalDataSourceImpl implements RepositoryLocalDataSource {
-  late Future<Isar> _db;
+  final Isar _db;
 
-  RepositoryLocalDataSourceImpl() {
-    _initDb();
-  }
-
-  Future<void> _initDb() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _db = Isar.open(
-      [RepositoryModelSchema],
-      directory: dir.path,
-      name: DatabaseConstants.isarSchema,
-    );
-  }
+  RepositoryLocalDataSourceImpl(this._db);
 
   @override
   Future<List<RepositoryModel>> getRepositories({
     required int page,
     required String query,
   }) async {
-    final isar = await _db;
-
-    return isar.repositoryModels
+    return _db.repositoryModels
         .filter()
         .pageEqualTo(page)
         .and()
@@ -59,19 +46,15 @@ class RepositoryLocalDataSourceImpl implements RepositoryLocalDataSource {
 
   @override
   Future<void> cacheRepositories(List<RepositoryModel> repositories) async {
-    final isar = await _db;
-
-    await isar.writeTxn(() async {
-      await isar.repositoryModels.putAll(repositories);
+    await _db.writeTxn(() async {
+      await _db.repositoryModels.putAll(repositories);
     });
   }
 
   @override
   Future<void> clearCache(String query) async {
-    final isar = await _db;
-
-    await isar.writeTxn(() async {
-      await isar.repositoryModels
+    await _db.writeTxn(() async {
+      await _db.repositoryModels
           .filter()
           .queryEqualTo(query)
           .deleteAll();
@@ -80,9 +63,7 @@ class RepositoryLocalDataSourceImpl implements RepositoryLocalDataSource {
 
   @override
   Future<int> getTotalCount(String query) async {
-    final isar = await _db;
-
-    return isar.repositoryModels
+    return _db.repositoryModels
         .filter()
         .queryEqualTo(query)
         .count();
@@ -93,9 +74,7 @@ class RepositoryLocalDataSourceImpl implements RepositoryLocalDataSource {
     required int page,
     required String query,
   }) async {
-    final isar = await _db;
-
-    final count = await isar.repositoryModels
+    final count = await _db.repositoryModels
         .filter()
         .pageEqualTo(page)
         .and()
