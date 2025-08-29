@@ -10,7 +10,9 @@ import '../data/models/repository_model.dart';
 import '../data/repositories/repository_repository_impl.dart';
 import '../domain/repositories/repository_repository.dart';
 import '../domain/usecase/get_repositories.dart';
+import '../domain/usecase/login_usecase.dart';
 import '../presentation/cubit/repository_cubit.dart';
+import '../presentation/cubit/login_cubit.dart';
 
 
 final sl = GetIt.instance;
@@ -26,10 +28,19 @@ Future<void> init() async {
     ),
   );
 
+  // Login Feature
+  // Cubit
+  sl.registerFactory(
+        () => LoginCubit(
+      loginUseCase: sl(),
+    ),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => GetRepositories(sl()));
   sl.registerLazySingleton(() => RefreshRepositories(sl()));
   sl.registerLazySingleton(() => GetTotalCount(sl()));
+  sl.registerLazySingleton(() => LoginUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<RepositoryRepository>(

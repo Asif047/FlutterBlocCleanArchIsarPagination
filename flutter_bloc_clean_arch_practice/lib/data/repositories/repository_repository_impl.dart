@@ -2,11 +2,13 @@ import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../../../domain/entities/repository_entity.dart';
+import '../../../domain/entities/user_entity.dart';
 import '../../../domain/repositories/repository_repository.dart';
 import '../../core/error/Failure.dart';
 import '../../core/util/constants.dart';
 import '../datasources/local/repository_local_datasource.dart';
 import '../datasources/remote/repository_remote_datasource.dart';
+import '../models/user_model.dart';
 
 
 class RepositoryRepositoryImpl implements RepositoryRepository {
@@ -113,6 +115,28 @@ class RepositoryRepositoryImpl implements RepositoryRepository {
       return Left(e);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> login({
+    required String username,
+    required String password,
+  }) async {
+    try {
+      if (!(await connectionChecker.hasConnection)) {
+        return const Left(NetworkFailure(ErrorMessages.networkError));
+      }
+
+      final UserModel userModel = await remoteDataSource.login(
+        username: username,
+        password: password,
+      );
+      return Right(userModel);
+    } on ServerFailure catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 }

@@ -1,6 +1,7 @@
 class ApiConstants {
   static const String baseUrl = 'https://api.github.com';
   static const String searchRepositories = '/search/repositories';
+  static const String login = 'https://dummyjson.com/auth/login';
 
   // Default parameters
   static const int defaultPerPage = 15;

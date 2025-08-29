@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'di/injection_container.dart' as di;
 import 'presentation/cubit/repository_cubit.dart';
 import 'presentation/pages/home_page.dart';
+import 'presentation/pages/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,10 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: BlocProvider(
-        create: (_) => di.sl<RepositoryCubit>(),
-        child: const HomePage(),
-      ),
+      home: const LoginPage(),
     );
   }
 }

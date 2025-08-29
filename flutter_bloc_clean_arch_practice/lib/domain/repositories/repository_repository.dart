@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc_clean_arch_practice/core/error/Failure.dart';
 
 import '../entities/repository_entity.dart';
+import '../entities/user_entity.dart';
 
 abstract class RepositoryRepository {
   /// Gets a paginated list of repositories
@@ -26,4 +27,10 @@ abstract class RepositoryRepository {
 
   /// Returns the total count of repositories available for the given query
   Future<Either<Failure, int>> getTotalCount(String query);
+
+  /// Logs in a user
+  Future<Either<Failure, UserEntity>> login({
+    required String username,
+    required String password,
+  });
 }

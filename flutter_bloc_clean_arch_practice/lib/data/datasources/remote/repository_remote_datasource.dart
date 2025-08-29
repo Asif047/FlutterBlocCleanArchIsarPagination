@@ -4,6 +4,7 @@ import '../../../core/error/Failure.dart';
 import '../../../core/network/dio_client.dart';
 import '../../../core/util/constants.dart';
 import '../../models/repository_model.dart';
+import '../../models/user_model.dart';
 
 abstract class RepositoryRemoteDataSource {
   /// Gets repositories from the remote API
@@ -17,6 +18,12 @@ abstract class RepositoryRemoteDataSource {
 
   /// Gets total count of repositories for a query
   Future<int> getTotalCount(String query);
+
+  /// Logs in a user
+  Future<UserModel> login({
+    required String username,
+    required String password,
+  });
 }
 
 class RepositoryRemoteDataSourceImpl implements RepositoryRemoteDataSource {
@@ -69,6 +76,32 @@ class RepositoryRemoteDataSourceImpl implements RepositoryRemoteDataSource {
 
       if (response.statusCode == 200) {
         return response.data['total_count'] ?? 0;
+      } else {
+        throw const ServerFailure(ErrorMessages.serverError);
+      }
+    } on DioException catch (e) {
+      throw ServerFailure(e.message ?? ErrorMessages.serverError);
+    } catch (e) {
+      throw const ServerFailure(ErrorMessages.unknownError);
+    }
+  }
+
+  @override
+  Future<UserModel> login({
+    required String username,
+    required String password,
+  }) async {
+    try {
+      final response = await dioClient.post(
+        ApiConstants.login,
+        data: {
+          'username': username,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return UserModel.fromJson(response.data);
       } else {
         throw const ServerFailure(ErrorMessages.serverError);
       }
